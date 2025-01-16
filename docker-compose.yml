@@ -281,7 +281,7 @@ services:
 
   webapp:
     build:
-      context: app
+      context: UrlToKeyProject
     volumes:
       - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
@@ -289,4 +289,4 @@ services:
       - "/proc:/hostfs/proc:ro"
       - "/:/hostfs:ro"
     ports:
-      - 8000:8000
+      - 9000:9000
