@@ -279,7 +279,7 @@ services:
       - KIBANA_FLEET_PASSWORD=${ELASTIC_PASSWORD}
       - KIBANA_HOST=https://kibana:5601
 
-  webapp:
+  demo-app:
     build:
       context: UrlToKeyProject
     volumes:
