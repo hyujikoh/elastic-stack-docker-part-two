@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        // 문서가 준비되면 함수를 실행
+        document.addEventListener("DOMContentLoaded", function(){
+            // form의 제출 이벤트를 가로챈다
+            document.querySelector("form").addEventListener("submit", function(e){
+                // 기본 제출 동작을 방지
+                e.preventDefault();
+
+                // 입력된 URL을 가져온다
+                var url = document.querySelector("input[name='URL']").value;
+
+                // XMLHttpRequest 객체를 생성
+                var xhr = new XMLHttpRequest();
+                // 요청을 초기화
+                xhr.open("GET", "/url/short-url?url=" + encodeURIComponent(url), true);
+                // 요청이 완료되면 실행될 함수를 설정
+                xhr.onload = function(){
+                    // 상태 코드가 400이면 alert를 띄운다
+                    if(xhr.status == 400){
+                        alert("400 에러: 잘못된 요청입니다.");
+                    } else {
+                        // 응답 데이터(JSON)를 파싱하여 객체로 변환
+                        var responseText = xhr.responseText;
+                        // 결과를 표시할 요소를 찾아서 응답 데이터를 삽입
+                        document.getElementById("result").innerHTML = " <h2> 단축된 URL 키 값 : "+ responseText +"</h2>";
+                    }
+                };
+                // 요청을 전송
+                xhr.send();
+            });
+
+
+            document.querySelectorAll("form")[2].addEventListener("submit", function(e){
+                // 기본 제출 동작을 방지
+                e.preventDefault();
+
+                // 확인하려는 URL을 가져온다
+                var url = document.querySelectorAll("input[name='url']")[1].value;
+
+                // XMLHttpRequest 객체를 생성
+                var xhr = new XMLHttpRequest();
+                // 요청을 초기화
+                xhr.open("GET", "/url/count?url=" + encodeURIComponent(url), true);
+                // 요청이 완료되면 실행될 함수를 설정
+                xhr.onload = function(){
+                    if(xhr.status == 400){
+                        alert("400 에러: 잘못된 요청입니다.");
+                    } else {
+                        // 응답 데이터를 파싱하여 객체로 변환
+                        var responseText = xhr.responseText;
+                        // 결과를 표시할 요소를 찾아서 응답 데이터를 삽입
+                        document.getElementById("count").innerHTML = " <h2> 사용 횟수 : "+ responseText +"</h2>";
+                    }
+                };
+                // 요청을 전송
+                xhr.send();
+            });
+
+
+        });
+    </script>
+</head>
+<body>
+<form action="/url/shortUrl" method="get">
+    단축할 URL : <input type="text" name="URL" />
+    <button type="submit">전송</button>
+</form>
+
+<!-- 결과를 표시할 요소 -->
+<div id="result">
+    <h2> 단축된 URL 키 값 : </h2>
+</div>
+
+
+<form action="/url/key-url" method = "get">
+    입력할 키값 <input type="text" name="url" />
+    <button type="submit">리다이렉트</button>
+</form>
+
+
+<form action="/url/count" method = "get">
+    확인 URL <input type="text" name="url" />
+    <button type="submit">확인</button>
+</form>
+
+<div id="count">
+    <h2> 사용 횟수 : </h2>
+</div>
+
+
+</body>
+</html>
+</body>
+</html>

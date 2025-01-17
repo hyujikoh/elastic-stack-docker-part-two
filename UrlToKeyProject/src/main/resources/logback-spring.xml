@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <property name="CUSTOM_LOG_PATTERN"
+              value="${CUSTOM_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd'T'HH:mm:ss.SSSXXX}}){faint} [%thread] %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} [CORRELATION_ID: %X{CORRELATION_ID:-NO CORRELATION ID}] %clr(${LOG_CORRELATION_PATTERN:-}){faint}%clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+
+    <logger name="org.zalando.logbook" level="TRACE">
+    </logger>
+
+    <appender name="CUSTOM_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${CONSOLE_LOG_THRESHOLD}</level>
+        </filter>
+        <encoder>
+            <pattern>${CUSTOM_LOG_PATTERN}</pattern>
+            <charset>${CONSOLE_LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="warn_file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/warn.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/warn-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+                <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSSX</timestampFormat>
+                <appendLineSeparator>true</appendLineSeparator>
+                <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                    <prettyPrint>true</prettyPrint>
+                </jsonFormatter>
+            </layout>
+        </encoder>
+    </appender>
+
+    <appender name="error_file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/error-%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+                <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSSX</timestampFormat>
+                <appendLineSeparator>true</appendLineSeparator>
+                <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                    <prettyPrint>true</prettyPrint>
+                </jsonFormatter>
+            </layout>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CUSTOM_CONSOLE"/>
+    </root>
+
+    <logger name="kr.co.youhost.cems.web.CemsApplication" level="INFO"/>
+    <logger name="kr.co.youhost.cems.web.common" level="INFO"/>
+    <logger name="kr.co.youhost.cems.web.domains" level="INFO"/>
+    <logger name="kr.co.youhost.cems.web.utils" level="INFO"/>
+
+<!--    개발 및 운영환경을 제외하고 sql 로그가 출력하게 개발해야한다  TODO.-->
+
+    <logger name="kr.co.youhost.cems.web" level="WARN">
+        <appender-ref ref="warn_file"/>
+    </logger>
+
+    <logger name="kr.co.youhost.cems.web" level="ERROR">
+        <appender-ref ref="error_file"/>
+    </logger>
+</configuration>
